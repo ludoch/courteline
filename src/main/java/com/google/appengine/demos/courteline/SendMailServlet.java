@@ -83,11 +83,15 @@ public class SendMailServlet extends HttpServlet {
         try {
             Message msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress("chambres.hotes.courteline@gmail.com", "Site Courteline"));
-            msg.addRecipient(Message.RecipientType.TO,
+            msg.addRecipient(Message.RecipientType.CC,
                     new InternetAddress("chambres.hotes.courteline@gmail.com", "Courteline"));
             if (email.chars().filter(ch -> ch == '@').count() == 1) {
-                msg.addRecipient(Message.RecipientType.CC,
+                msg.addRecipient(Message.RecipientType.TO,
                         new InternetAddress(email, prenom + " " + nom));
+            } else {
+               msg.addRecipient(Message.RecipientType.CC,
+                       new InternetAddress("chambres.hotes.courteline@gmail.com", "Courteline"));
+                
             }
             msg.addRecipient(Message.RecipientType.BCC,
                     new InternetAddress("ludovic.champenois@gmail.com", "Courteline"));
