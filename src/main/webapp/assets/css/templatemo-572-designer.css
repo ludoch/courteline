@@ -410,6 +410,11 @@ section.explore-work .left-image img {
   border-radius: 7.5px;
 }
 
+
+section.explore-work .right-image img {
+  border-radius: 7.5px;
+}
+
 section.explore-work .right-content {
   margin-left: 0;
   margin-top: 30px;
@@ -512,22 +517,22 @@ section.whats-trending .left-content p {
   margin-bottom: 30px;
 }
 
-section.whats-trending .right-image {
+section.whats-trending .RIGHTIMAGE {
   position: relative;
   display: none;
 }
 
 @media (min-width: 992px) {
-  section.whats-trending .right-image {
+  section.whats-trending .RIGHTIMAGE {
     display: inline-block;
   }
 }
 
-section.whats-trending .right-image .thumb {
+section.whats-trending .RIGHTIMAGE .thumb {
   position: relative;
 }
 
-section.whats-trending .right-image .thumb .hover-effect {
+section.whats-trending .RIGHTIMAGE .thumb .hover-effect {
   position: absolute;
   left: 0;
   right: 0;
@@ -540,7 +545,7 @@ section.whats-trending .right-image .thumb .hover-effect {
   transition: all .5s;
 }
 
-section.whats-trending .right-image .thumb .hover-effect .inner-content {
+section.whats-trending .RIGHTIMAGE .thumb .hover-effect .inner-content {
   position: absolute;
   width: 100%;
   text-align: center;
@@ -549,7 +554,7 @@ section.whats-trending .right-image .thumb .hover-effect .inner-content {
           transform: translateY(-50%);
 }
 
-section.whats-trending .right-image .thumb .hover-effect .inner-content h4 {
+section.whats-trending .RIGHTIMAGE .thumb .hover-effect .inner-content h4 {
   margin-bottom: 10px;
   -webkit-transform: translateX(-30px);
           transform: translateX(-30px);
@@ -558,7 +563,7 @@ section.whats-trending .right-image .thumb .hover-effect .inner-content h4 {
   transition: all .5s;
 }
 
-section.whats-trending .right-image .thumb .hover-effect .inner-content h4 a {
+section.whats-trending .RIGHTIMAGE .thumb .hover-effect .inner-content h4 a {
   font-size: 20px;
   font-weight: 700;
   color: #ffffff;
@@ -566,7 +571,7 @@ section.whats-trending .right-image .thumb .hover-effect .inner-content h4 a {
   letter-spacing: 0.5px;
 }
 
-section.whats-trending .right-image .thumb .hover-effect .inner-content span {
+section.whats-trending .RIGHTIMAGE .thumb .hover-effect .inner-content span {
   font-size: 15px;
   color: #ffffff;
   display: inline-block;
@@ -577,28 +582,28 @@ section.whats-trending .right-image .thumb .hover-effect .inner-content span {
   transition: all .5s;
 }
 
-section.whats-trending .right-image .thumb:hover .hover-effect {
+section.whats-trending .RIGHTIMAGE .thumb:hover .hover-effect {
   opacity: 1;
   visibility: visible;
 }
 
-section.whats-trending .right-image .thumb:hover .hover-effect .inner-content h4 {
+section.whats-trending .RIGHTIMAGE .thumb:hover .hover-effect .inner-content h4 {
   opacity: 1;
   -webkit-transform: translateX(0px);
           transform: translateX(0px);
 }
 
-section.whats-trending .right-image .thumb:hover .hover-effect .inner-content span {
+section.whats-trending .RIGHTIMAGE .thumb:hover .hover-effect .inner-content span {
   -webkit-transform: translateX(0px);
           transform: translateX(0px);
   opacity: 1;
 }
 
-section.whats-trending .right-image .thumb img {
+section.whats-trending .RIGHTIMAGE .thumb img {
   border-radius: 7.5px;
 }
 
-section.whats-trending .right-image::after {
+section.whats-trending .RIGHTIMAGE::after {
   width: 440px;
   height: 300px;
   right: -440px;
@@ -939,6 +944,21 @@ section.interior-design .left-image {
 }
 
 section.interior-design .left-image img {
+  border-radius: 7.5px;
+}
+
+
+section.interior-design .right-image {
+  margin-right: 0;
+}
+
+@media (min-width: 992px) {
+  section.interior-design .right-image {
+    margin-right: 50px;
+  }
+}
+
+section.interior-design .right-image img {
   border-radius: 7.5px;
 }
 

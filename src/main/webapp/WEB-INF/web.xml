@@ -6,7 +6,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>mail</servlet-name>
-        <url-pattern>/SendMailServlet</url-pattern>
+        <url-pattern>/SendMailServlet2</url-pattern>
     </servlet-mapping>
 
 </web-app>

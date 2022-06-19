@@ -19,12 +19,14 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Pattern;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.ServletException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +48,20 @@ public class SendMailServlet extends HttpServlet {
             throws IOException {
 
         resp.setContentType("text/html");
-
+        // get reCAPTCHA request param
+        String gRecaptchaResponse = req
+                .getParameter("g-recaptcha-response");
+        if (gRecaptchaResponse == null) {
+            System.out.println("RE CAPTCHA IS NULL...");
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return; // Ignore spammers
+       }
+        System.out.println(gRecaptchaResponse);
+        if (!VerifyRecaptcha.verify(gRecaptchaResponse)) {
+            System.out.println("RE CAPTCHA INVALID.so we stop.");
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return; // Ignore spammers
+       }
         Map params = req.getParameterMap();
         Iterator i = params.keySet().iterator();
         while (i.hasNext()) {
@@ -64,7 +79,13 @@ public class SendMailServlet extends HttpServlet {
         String nom = req.getParameter("nom");
         String prenom = req.getParameter("prenom");
         String personnes = req.getParameter("personnes");
-
+        if (prenom.startsWith("Henrytug")) {
+            return; // Ignore spammers
+        }
+        if (date.isEmpty() && !isNumeric(nuits)) {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return; // Ignore spammers
+        }
         String content = "Demande d'information via https://courteline.appspot.com";
         content += "\n\n" + "chambre_souhaitee: " + chambre_souhaitee;
         content += "\n" + "date: " + date;
@@ -72,7 +93,6 @@ public class SendMailServlet extends HttpServlet {
         content += "\n" + "nom: " + nom;
         content += "\n" + "prenom: " + prenom;
         content += "\n" + "nombre_de_personnes: " + personnes;
-        content += "\n" + "chambre_souhaitee: " + chambre_souhaitee;
         content += "\n" + "nombre_de_nuits: " + nuits;
         content += "\n" + "telephone: " + telephone;
         content += "\n" + "message: " + message;
@@ -83,15 +103,13 @@ public class SendMailServlet extends HttpServlet {
         try {
             Message msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress("chambres.hotes.courteline@gmail.com", "Site Courteline"));
-            msg.addRecipient(Message.RecipientType.CC,
-                    new InternetAddress("chambres.hotes.courteline@gmail.com", "Courteline"));
+            if (!date.isEmpty()) {
+                msg.addRecipient(Message.RecipientType.CC,
+                        new InternetAddress("chambres.hotes.courteline@gmail.com", "Courteline"));
+            }
             if (email.chars().filter(ch -> ch == '@').count() == 1) {
                 msg.addRecipient(Message.RecipientType.TO,
                         new InternetAddress(email, prenom + " " + nom));
-            } else {
-               msg.addRecipient(Message.RecipientType.CC,
-                       new InternetAddress("chambres.hotes.courteline@gmail.com", "Courteline"));
-                
             }
             msg.addRecipient(Message.RecipientType.BCC,
                     new InternetAddress("ludovic.champenois@gmail.com", "Courteline"));
@@ -101,15 +119,27 @@ public class SendMailServlet extends HttpServlet {
             resp.getWriter().println("Site Courteline, email reçu, merci: <br>"
                     + escapeHTML(content)
                     + "<br><button onclick=\"window.history.back()\">Retour page précédente.</button><br>");
+            if (date.isEmpty()) {
+                resp.getWriter().println("Erreur, la date est incorrecte. <br>");
+
+            }
 
             //    RequestDispatcher dispatcher = getServletContext()
-            //            .getRequestDispatcher("https://courteline.appspot.com/");
+            //            .getRequestDispatcher("https://courteline-nantes.appspot.com/");
             //    dispatcher.forward(req, resp);
         } catch (IOException | MessagingException e) {
             resp.getWriter().println("Site Courteline, email erreur. \n\n");
             e.printStackTrace();
             resp.getWriter().println("Error=" + e.getMessage());
         }
+    }
+    private Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+
+    public boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        return pattern.matcher(strNum).matches();
     }
 
     public static String escapeHTML(String s) {
