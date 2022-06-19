@@ -34,7 +34,7 @@ public class VerifyRecaptcha {
             con.setRequestProperty("User-Agent", USER_AGENT);
             con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 
-            String postParams = "secret=" + secret + "&response="
+            String postParams = "secret=" + AccessSecretVersion.accessSecretVersion() + "&response="
                     + gRecaptchaResponse;
 
             // Send post request
