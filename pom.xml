@@ -15,7 +15,7 @@
     </prerequisites>
 
     <properties>
-        <appengine.target.version>2.0.4</appengine.target.version>
+        <appengine.target.version>2.0.33</appengine.target.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -24,13 +24,13 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-secretmanager</artifactId>
-      <version>2.1.2</version>
+      <version>2.58.0</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java-util</artifactId>
-      <version>3.20.1</version>
+      <version>3.25.6</version>
     </dependency>
     <dependency>
             <groupId>com.google.appengine</groupId>
@@ -81,7 +81,7 @@
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
-            <version>1.0.4</version>
+            <version>1.1.4</version>
             <type>jar</type>
         </dependency>
     </dependencies>
@@ -93,7 +93,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.6</version>
+                <version>3.4.0</version>
                 <configuration>
                     <archiveClasses>true</archiveClasses>
                     <webResources>
@@ -110,25 +110,25 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>2.4.3</version>
+                <version>2.8.3</version>
                 <configuration>
                     <projectId>courteline-nantes</projectId>
-                    <version>5</version>
-                    <promote>true</promote>
+                    <version>java21</version>
+                    <promote>false</promote>
                 </configuration>
             </plugin>
             <plugin>
               <artifactId>maven-compiler-plugin</artifactId>
-              <version>3.10.1</version>
+              <version>3.13.0</version>
               <configuration>
-                <source>1.8</source>
-                <target>1.8</target>
+                <source>21</source>
+                <target>21</target>
               </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.9.0</version>
+                <version>2.18.0</version>
                 <executions>
                     <execution>
                         <phase>compile</phase>

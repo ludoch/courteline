@@ -20,12 +20,12 @@
         <link rel="stylesheet" href="assets/css/owl.css">
         <link rel="stylesheet" href="assets/css/animate.css">
         <link rel="stylesheet" href="assets/css/swiper-bundle.min.css"/>
-        <script src="https://www.google.com/recaptcha/api.js"></script>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         <script>
           function onSubmit(token) {
              document.getElementById("demo-form").submit();
-          }
-      </script>
+        }
+    </script>
     </head>
 
     <body>
@@ -228,7 +228,7 @@ Prix<br>
                                              <b>EQUIPEMENTS</b><br>
 
                                             Plateau de courtoisie<br>
-                                            WIFI , TV <br>
+                                            WI-FI , TV <br>
                                             Détecteur de fumée<br>
                                             Lit parapluie<br>
                                             Sèche-cheveux<br><br>
@@ -261,15 +261,15 @@ Prix<br>
                         </div>
                         </div>
                     </footer>
-        <section class="contact-us" id="contact">
+        <section class="contact-us" id="contact1">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6 left-form"> 
 
                         <form id="demo-form" class="webform-client-form" enctype="application/x-www-form-urlencoded" 
-                              action="https://courteline-nantes.appspot.com/SendMailServlet2"
+                              action="SendMailServlet2"
 
-                              method="post" id="contact" accept-charset="UTF-8">
+                              method="post" id="contact2" accept-charset="UTF-8">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="section-heading">
@@ -278,30 +278,34 @@ Prix<br>
 
                                     </div>
                                 </div>
-                                <div class="col-lg-6">                 
-                                    <input name="prenom" type="text" id="name" placeholder="Prénom*" required="">               
+                                <div class="col-lg-6">
+                                    <label for="name">Prénom</label>
+                                    <input name="prenom" type="text" id="name" placeholder="Prénom*" autocomplete="on" required="">
                                 </div>
-                                <div class="col-lg-6">                
-                                    <input name="nom" type="text" id="last-name" placeholder="Nom*" required="">                           
+                                <div class="col-lg-6">
+                                    <label for="last-name">Nom</label>
+                                    <input name="nom" type="text" id="last-name" placeholder="Nom*" required="">
                                 </div>
-                                <div class="col-lg-6">                       
-                                    <input name="email" type="email" id="email"  placeholder="Adresse mail" required="">                        
+                                <div class="col-lg-6">
+                                    <label for="email">Email</label>
+                                    <input name="email" type="email" id="email"  placeholder="Adresse mail" autocomplete="on" required="">
                                 </div>
-                                <div class="col-lg-6">                
-                                    <input name="telephone" type="text" id="telephone" placeholder="Téléphone*" required="">                           
+                                <div class="col-lg-6">
+                                    <label for="telephone">telephone</label>
+                                    <input name="telephone" type="text" id="telephone" placeholder="Téléphone*" required="">
                                 </div> 
 
 
 
 
                                 <div class="col-lg-6">                         
-                                    <input name="date" type="date" id="subject" placeholder="Date*" required="">                        
+                                    <input name="date" type="date" id="subject1" placeholder="Date*" required="">                        
                                 </div>
                                 <div class="col-lg-6">                         
-                                    <input name="nuits" type="text" id="subject" placeholder="Nombre de nuits*" required="">                        
+                                    <input name="nuits" type="text" id="subject2" placeholder="Nombre de nuits*" required="">                        
                                 </div>
                                 <div class="col-lg-6">                         
-                                    <input name="personnes" type="text" id="subject" placeholder="Nombre de personnes*" required="">                        
+                                    <input name="personnes" type="text" id="subject3" placeholder="Nombre de personnes*" required="">                        
                                 </div>
 
                                 <div class="col-lg-6">                         
@@ -317,10 +321,10 @@ Prix<br>
                                     <textarea name="message" class="form-control" id="message" placeholder="Message" required=""></textarea>                          
                                 </div>
                                 <div class="col-lg-12">
-                                    <button class="g-recaptcha  main-button"  id="form-submit"
+                                    <button class="g-recaptcha" 
         data-sitekey="6LfWLIEgAAAAADoCmpeyrxRq_81uPpyhGGqQxXTX" 
         data-callback='onSubmit' 
-        data-action='submit'>Envoyez</button>
+        >Envoyez</button>
                                     <!--button type="submit" id="form-submit" class="main-button ">Envoyez</button-->                            
                                 </div>
                             </div>
@@ -341,13 +345,16 @@ Prix<br>
                             </iframe> 
                         </div>
                     </div>
-                    </section>
+                </div>
+            </div>
+                
+        </section>
 
   <footer>     <div class="col-lg-12">
                                     <div class="sub-footer">
                                         <div class="row">
                                             <div class="col-lg-6">
-                                                <p>Copyright © 2022 Champenois. All Rights Reserved. 
+                                                <p>Copyright © 2025 Champenois. All Rights Reserved. 
                                             </div>
                                             <div class="col-lg-6">
                                             </div>

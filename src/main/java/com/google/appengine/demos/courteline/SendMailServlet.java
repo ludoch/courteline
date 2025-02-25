@@ -16,18 +16,15 @@
 package com.google.appengine.demos.courteline;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.servlet.ServletException;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,22 +50,15 @@ public class SendMailServlet extends HttpServlet {
                 .getParameter("g-recaptcha-response");
         if (gRecaptchaResponse == null) {
             System.out.println("RE CAPTCHA IS NULL...");
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return; // Ignore spammers
        }
         System.out.println(gRecaptchaResponse);
         if (!VerifyRecaptcha.verify(gRecaptchaResponse)) {
             System.out.println("RE CAPTCHA INVALID.so we stop.");
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return; // Ignore spammers
        }
-        Map params = req.getParameterMap();
-        Iterator i = params.keySet().iterator();
-        while (i.hasNext()) {
-            String key = (String) i.next();
-            String value = ((String[]) params.get(key))[0];
-            System.out.println(key + " = " + value);
-        }
 
         String date = req.getParameter("date");
         String telephone = req.getParameter("telephone");
@@ -82,20 +72,28 @@ public class SendMailServlet extends HttpServlet {
         if (prenom.startsWith("Henrytug")) {
             return; // Ignore spammers
         }
-        if (date.isEmpty() && !isNumeric(nuits)) {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return; // Ignore spammers
+        StringBuilder contentBuilder = new StringBuilder();
+        contentBuilder.append("Demande d'information via https://courteline.appspot.com\n\n");
+        contentBuilder.append("chambre_souhaitee: ").append(chambre_souhaitee).append("\n");
+        contentBuilder.append("date: ").append(date).append("\n");
+        if (date.isEmpty()) {
+            contentBuilder.append("Erreur, la date est incorrecte.").append("\n");
         }
-        String content = "Demande d'information via https://courteline.appspot.com";
-        content += "\n\n" + "chambre_souhaitee: " + chambre_souhaitee;
-        content += "\n" + "date: " + date;
-        content += "\n" + "email: " + email;
-        content += "\n" + "nom: " + nom;
-        content += "\n" + "prenom: " + prenom;
-        content += "\n" + "nombre_de_personnes: " + personnes;
-        content += "\n" + "nombre_de_nuits: " + nuits;
-        content += "\n" + "telephone: " + telephone;
-        content += "\n" + "message: " + message;
+        contentBuilder.append("email: ").append(email).append("\n");
+        if (email.isEmpty()) {
+            contentBuilder.append("Erreur, le mail est incorrect.").append("\n");
+        }
+        contentBuilder.append("nom: ").append(nom).append("\n");
+        contentBuilder.append("prenom: ").append(prenom).append("\n");
+        contentBuilder.append("nombre_de_personnes: ").append(personnes).append("\n");
+        contentBuilder.append("nombre_de_nuits: ").append(nuits).append("\n");
+        if (!isNumeric(nuits)) {
+            contentBuilder.append("Erreur, le nombre de nuits est incorrect.").append("\n");
+        }
+        contentBuilder.append("telephone: ").append(telephone).append("\n");
+        contentBuilder.append("message: ").append(message).append("\n");
+        String content = contentBuilder.toString();
+        System.out.println(content);
 
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
@@ -119,10 +117,6 @@ public class SendMailServlet extends HttpServlet {
             resp.getWriter().println("Site Courteline, email reçu, merci: <br>"
                     + escapeHTML(content)
                     + "<br><button onclick=\"window.history.back()\">Retour page précédente.</button><br>");
-            if (date.isEmpty()) {
-                resp.getWriter().println("Erreur, la date est incorrecte. <br>");
-
-            }
 
             //    RequestDispatcher dispatcher = getServletContext()
             //            .getRequestDispatcher("https://courteline-nantes.appspot.com/");
@@ -133,7 +127,7 @@ public class SendMailServlet extends HttpServlet {
             resp.getWriter().println("Error=" + e.getMessage());
         }
     }
-    private Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+    private final Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
 
     public boolean isNumeric(String strNum) {
         if (strNum == null) {
