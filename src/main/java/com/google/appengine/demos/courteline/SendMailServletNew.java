@@ -32,24 +32,24 @@ public class SendMailServletNew extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("text/html;charset=UTF-8");
-
-        // 1. Validate reCAPTCHA
-        String gRecaptchaResponse = req.getParameter("g-recaptcha-response");
-        if (gRecaptchaResponse == null || gRecaptchaResponse.isEmpty()) {
-             System.out.println("RE CAPTCHA IS NULL...");
-           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Veuillez valider le reCAPTCHA.");
-            return;
-        }
-        
-        // Verify with Google and get the full JSON response
-        boolean ok = VerifyRecaptchaNew.verify(gRecaptchaResponse);
-        
-        if (!ok) {
-            System.err.println("Google reCAPTCHA Error: " );
-             System.out.println("RE CAPTCHA INVALID.so we stop.");
-           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "reCAPTCHA invalide.");
-            return;
-        }
+//
+//        // 1. Validate reCAPTCHA
+//        String gRecaptchaResponse = req.getParameter("g-recaptcha-response");
+//        if (gRecaptchaResponse == null || gRecaptchaResponse.isEmpty()) {
+//             System.out.println("RE CAPTCHA IS NULL...");
+//           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Veuillez valider le reCAPTCHA.");
+//            return;
+//        }
+//        
+//        // Verify with Google and get the full JSON response
+//        boolean ok = VerifyRecaptchaNew.verify(gRecaptchaResponse);
+//        
+//        if (!ok) {
+//            System.err.println("Google reCAPTCHA Error: " );
+//             System.out.println("RE CAPTCHA INVALID.so we stop.");
+//           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "reCAPTCHA invalide.");
+//            return;
+//        }
 
     
 
