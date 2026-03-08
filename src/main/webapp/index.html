@@ -20,11 +20,23 @@
         <link rel="stylesheet" href="assets/css/owl.css">
         <link rel="stylesheet" href="assets/css/animate.css">
         <link rel="stylesheet" href="assets/css/swiper-bundle.min.css"/>
-<script src="https://www.google.com/recaptcha/enterprise.js?render=6LfWLIEgAAAAADoCmpeyrxRq_81uPpyhGGqQxXTX"></script>        <script>
-          function onSubmit(token) {
-             document.getElementById("demo-form").submit();
-        }
-    </script>
+
+        <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfWLIEgAAAAADoCmpeyrxRq_81uPpyhGGqQxXTX"></script>
+
+<script>
+  function onClick(e) {
+    e.preventDefault();
+    grecaptcha.enterprise.ready(function() {
+      // 2. Change 'execute' to use a named action like 'homepage'
+      grecaptcha.enterprise.execute('6LfWLIEgAAAAADoCmpeyrxRq_81uPpyhGGqQxXTX', {action: 'homepage'})
+        .then(function(token) {
+           // Add the token to a hidden field or submit directly
+           document.getElementById("g-recaptcha-response").value = token;
+           document.getElementById("demo-form").submit();
+        });
+    });
+  }
+</script>
     </head>
 
     <body>
