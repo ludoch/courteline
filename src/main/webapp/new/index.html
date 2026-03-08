@@ -161,13 +161,13 @@ Un petit réfrigérateur est mis à disposition .                    </p>
                     </div>
                 </div>
 
-                
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-        <script>
-          function onSubmit(token) {
-             document.getElementById("booking-form").submit();
-        }
-    </script>
+    <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>             
+    <script>
+     function onSubmit(token) {
+        // This ensures the token is submitted with the form
+        document.getElementById("booking-form").submit();
+     }
+   </script>   
 
     
  <form id="booking-form" class="booking-form" action="/SendMailServletNew" method="POST">

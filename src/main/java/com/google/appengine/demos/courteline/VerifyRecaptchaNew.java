@@ -16,32 +16,54 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class VerifyRecaptchaNew {
 
+    // Same API Key and Project ID as the first page
+    private static final String API_KEY = "AIzaSyCCqsM94oAX_ZcdjDm5o1UgewlS2W7sgaU";
+    private static final String PROJECT_ID = "courteline-nantes";
 
-    public static String getVerificationJson(String gRecaptchaResponse) {
+    // This MUST be the V2 Invisible Site Key
+    private static final String V2_SITE_KEY = "6LciQIMsAAAAALrh8ieVfTMnf3OtLL-cuv8fo7PC";
+
+    public static boolean verify(String token) {
+        if (token == null || token.isEmpty()) {
+            return false;
+        }
+
         try {
-            URL url = new URL("https://www.google.com/recaptcha/api/siteverify");
+            String apiUrl = String.format(
+                    "https://recaptchaenterprise.googleapis.com/v1/projects/%s/assessments?key=%s",
+                    PROJECT_ID, API_KEY);
+
+            URL url = new URL(apiUrl);
             HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
             con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             con.setDoOutput(true);
 
-            // USE YOUR NEW V2 SECRET KEY HERE
-            String postParams = "secret=6LciQIMsAAAAALrh8ieVfTMnf3OtLL-cuv8fo7PC&response=" + gRecaptchaResponse;
+            // Enterprise payload
+            String jsonInputString = String.format(
+                    "{\"event\": {\"token\": \"%s\", \"siteKey\": \"%s\"}}",
+                    token, V2_SITE_KEY);
 
-            OutputStream os = con.getOutputStream();
-            os.write(postParams.getBytes());
-            os.flush();
-            os.close();
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            StringBuilder response = new StringBuilder();
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
+            try (OutputStream os = con.getOutputStream()) {
+                os.write(jsonInputString.getBytes("utf-8"));
             }
-            in.close();
-            return response.toString(); // Returns the full JSON for logging
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = in.readLine()) != null) {
+                response.append(line.trim());
+            }
+
+            String result = response.toString();
+            System.out.println("v2 Enterprise Result: " + result);
+
+            // For v2 Invisible Enterprise, "valid" indicates if the challenge was passed
+            return result.contains("\"valid\": true");
+
         } catch (Exception e) {
-            return "{\"success\": false, \"error-codes\": [\"exception-caught\"]}";
+            e.printStackTrace();
+            return false;
         }
     }
 

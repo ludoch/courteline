@@ -42,10 +42,10 @@ public class SendMailServletNew extends HttpServlet {
         }
         
         // Verify with Google and get the full JSON response
-        String verificationResult = VerifyRecaptchaNew.getVerificationJson(gRecaptchaResponse);
+        boolean ok = VerifyRecaptchaNew.verify(gRecaptchaResponse);
         
-        if (!verificationResult.contains("\"success\": true")) {
-            System.err.println("Google reCAPTCHA Error: " + verificationResult);
+        if (!ok) {
+            System.err.println("Google reCAPTCHA Error: " );
              System.out.println("RE CAPTCHA INVALID.so we stop.");
            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "reCAPTCHA invalide.");
             return;

@@ -2,72 +2,60 @@ package com.google.appengine.demos.courteline;
 
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.OutputStream;
 import java.net.URL;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-
 import javax.net.ssl.HttpsURLConnection;
 
 public class VerifyRecaptcha {
+    // 1. Get this from Google Cloud Console > APIs & Services > Credentials
+    private static final String API_KEY = "AIzaSyCCqsM94oAX_ZcdjDm5o1UgewlS2W7sgaU";
+    
+    // 2. Your Project ID (e.g., courteline-nantes)
+    private static final String PROJECT_ID = "courteline-nantes";
+    
+    // 3. The v3 Site Key from your Enterprise Dashboard
+    private static final String SITE_KEY = "6LfWLIEgAAAAADoCmpeyrxRq_81uPpyhGGqQxXTX";
 
-    private static final String url = "https://www.google.com/recaptcha/api/siteverify";
-    private static final String client = "6LfWLIEgAAAAADoCmpeyrxRq_81uPpyhGGqQxXTX";
-    private final static String USER_AGENT = "Mozilla/5.0";
-
-    public static boolean verify(String gRecaptchaResponse) throws IOException {
-        if (gRecaptchaResponse == null || "".equals(gRecaptchaResponse)) {
-            return false;
-        }
+    public static boolean verify(String token) {
+        if (token == null || token.isEmpty()) return false;
 
         try {
-            URL obj = new URL(url);
-            HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+            // Enterprise URL format: projects/{project_id}/assessments
+            String apiUrl = String.format(
+                "https://recaptchaenterprise.googleapis.com/v1/projects/%s/assessments?key=%s",
+                PROJECT_ID, API_KEY);
 
-            // add reuqest header
+            URL url = new URL(apiUrl);
+            HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
             con.setRequestMethod("POST");
-            con.setRequestProperty("User-Agent", USER_AGENT);
-            con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-
-            String postParams = "secret=" + AccessSecretVersion.accessSecretVersion() + "&response="
-                    + gRecaptchaResponse;
-
-            // Send post request
+            con.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             con.setDoOutput(true);
-            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-            wr.writeBytes(postParams);
-            wr.flush();
-            wr.close();
 
-            int responseCode = con.getResponseCode();
-            System.out.println("\nSending 'POST' request to URL : " + url);
-            System.out.println("Post parameters : " + postParams);
-            System.out.println("Response Code : " + responseCode);
+            // JSON body required for Enterprise Assessments
+            String jsonInputString = String.format(
+                "{\"event\": {\"token\": \"%s\", \"siteKey\": \"%s\"}}",
+                token, SITE_KEY);
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
+            try (OutputStream os = con.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("utf-8");
+                os.write(input, 0, input.length);
             }
-            in.close();
 
-            // print result
-            System.out.println(response.toString());
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
+            StringBuilder response = new StringBuilder();
+            String responseLine;
+            while ((responseLine = in.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
 
-            //parse JSON response and return 'success' value
-            JsonReader jsonReader = Json.createReader(new StringReader(response.toString()));
-            JsonObject jsonObject = jsonReader.readObject();
-            jsonReader.close();
+            String result = response.toString();
+            System.out.println("Enterprise Verification Result: " + result);
 
-            return jsonObject.getBoolean("success");
+            // For v3 Enterprise, success means "tokenProperties.valid": true
+            // and you can also check "riskAnalysis.score" (0.0 to 1.0)
+            return result.contains("\"valid\": true") && result.contains("\"score\":");
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
