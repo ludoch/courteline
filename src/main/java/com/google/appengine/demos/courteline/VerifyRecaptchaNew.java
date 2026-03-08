@@ -1,16 +1,10 @@
 package com.google.appengine.demos.courteline;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.net.URL;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -39,7 +33,7 @@ public class VerifyRecaptchaNew {
             con.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             con.setDoOutput(true);
 
-            // Enterprise payload
+            // CORRECTED: Removed 'expectedAction' for v2 Invisible Key
             String jsonInputString = String.format(
                     "{\"event\": {\"token\": \"%s\", \"siteKey\": \"%s\"}}",
                     token, V2_SITE_KEY);
@@ -58,7 +52,7 @@ public class VerifyRecaptchaNew {
             String result = response.toString();
             System.out.println("v2 Enterprise Result: " + result);
 
-            // For v2 Invisible Enterprise, "valid" indicates if the challenge was passed
+            // For v2 Invisible, we only care if the token is valid
             return result.contains("\"valid\": true");
 
         } catch (Exception e) {

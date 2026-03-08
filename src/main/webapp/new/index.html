@@ -160,14 +160,14 @@ Un petit réfrigérateur est mis à disposition .                    </p>
                         </iframe>
                     </div>
                 </div>
+<script src="https://www.google.com/recaptcha/enterprise.js?render=6LciQIMsAAAAACSOV1QKU81UVw8VVmYv7mzQq0s1" async defer></script>
 
-    <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>             
-    <script>
-     function onSubmit(token) {
+<script>
+  function onSubmit(token) {
         // This ensures the token is submitted with the form
-        document.getElementById("booking-form").submit();
-     }
-   </script>   
+    document.getElementById("booking-form").submit();
+  }
+</script>   
 
     
  <form id="booking-form" class="booking-form" action="/SendMailServletNew" method="POST">
@@ -228,7 +228,7 @@ Un petit réfrigérateur est mis à disposition .                    </p>
         data-sitekey="6LciQIMsAAAAACSOV1QKU81UVw8VVmYv7mzQq0s1" 
         data-callback='onSubmit' 
         >Envoyer la demande</button>
-        
+      
         
  
 </form>
