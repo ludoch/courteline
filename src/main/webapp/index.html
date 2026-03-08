@@ -189,8 +189,8 @@ Un petit réfrigérateur est mis à disposition .                    </p>
             <input type="email" id="email" name="email" required>
         </div>
         <div class="form-group col">
-            <label for="tel">Téléphone</label>
-            <input type="tel" id="tel" name="telephone">
+            <label for="telephone">Téléphone</label>
+            <input type="tel" id="tel" name="tel" placeholder="Votre numéro de téléphone" required>
         </div>
     </div>
 
@@ -211,10 +211,11 @@ Un petit réfrigérateur est mis à disposition .                    </p>
 
     <div class="form-group">
         <label for="chambre_souhaitee">Chambre souhaitée</label>
-        <select id="room" name="room">
-            <option value="caravelle">La Caravelle</option>
-            <option value="julesverne">Jules Verne</option>
-        </select>
+<select id="chambre_souhaitee" name="chambre_souhaitee" required>
+    <option value="" disabled selected>Choisir une chambre</option>
+    <option value="caravelle">La Caravelle</option>
+    <option value="julesverne">Jules Verne</option>
+    </select>
     </div>
 
     <div class="form-group">

@@ -51,21 +51,21 @@ public class SendMailServletNew extends HttpServlet {
 //            return;
 //        }
 
-    
-
         // 2. Extract and sanitize parameters
         String prenom = getString(req.getParameter("prenom"));
         String nom = getString(req.getParameter("nom"));
         String email = getString(req.getParameter("email"));
-        String telephone = getString(req.getParameter("telephone"));
+        String telephone = getString(req.getParameter("tel"));
         String date = getString(req.getParameter("date"));
         String nuits = getString(req.getParameter("nuits"));
         String personnes = getString(req.getParameter("personnes"));
-        String chambre = getString(req.getParameter("chambre_souhaitee"));
+        String room = req.getParameter("chambre_souhaitee");
         String message = getString(req.getParameter("message"));
 
         // Anti-spam check
-        if (prenom.toLowerCase().startsWith("henrytug")) return;
+        if (prenom.toLowerCase().startsWith("henrytug")) {
+            return;
+        }
 
         // 3. Construct Email Body
         StringBuilder sb = new StringBuilder();
@@ -75,11 +75,12 @@ public class SendMailServletNew extends HttpServlet {
         sb.append("Tel: ").append(telephone).append("\n");
         sb.append("Arrivée: ").append(date).append("\n");
         sb.append("Séjour: ").append(nuits).append(" nuit(s), ").append(personnes).append(" pers.\n");
-        sb.append("Chambre: ").append(chambre).append("\n");
+        sb.append("Chambre: ").append(room).append("\n");
         sb.append("Message: \n").append(message).append("\n");
 
         String content = sb.toString();
 
+        System.out.println(content);
         // 4. Send Email
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
@@ -87,10 +88,13 @@ public class SendMailServletNew extends HttpServlet {
         try {
             Message msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress("chambres.hotes.courteline@gmail.com", "Site Courteline"));
-            
+
             // CC to owner
             msg.addRecipient(Message.RecipientType.TO, new InternetAddress("chambres.hotes.courteline@gmail.com", "Courteline"));
-            
+            if (email.chars().filter(ch -> ch == '@').count() == 1) {
+                msg.addRecipient(Message.RecipientType.TO,
+                        new InternetAddress(email, prenom + " " + nom));
+            }
             // BCC to developer
             msg.addRecipient(Message.RecipientType.BCC, new InternetAddress("ludovic.champenois@gmail.com", "Dev Support"));
 
@@ -113,7 +117,9 @@ public class SendMailServletNew extends HttpServlet {
     }
 
     public static String escapeHTML(String s) {
-        if (s == null) return "";
+        if (s == null) {
+            return "";
+        }
         return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;");
     }
 }
