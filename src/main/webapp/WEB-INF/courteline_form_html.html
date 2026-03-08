@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Courteline - Réservation</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 600px;
+      width: 100%;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    label .required {
+      color: #e74c3c;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e1e8ed;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    button[type="submit"]:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    button[type="submit"]:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .security-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .security-badge svg {
+      width: 20px;
+      height: 20px;
+      fill: #27ae60;
+    }
+
+    .error-message {
+      display: none;
+      background: #fee;
+      color: #c33;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 30px 20px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+    }
+
+    /* Loading indicator */
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 10px;
+      color: #667eea;
+      font-size: 14px;
+    }
+
+    .loading.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🏨 Réservation Courteline</h1>
+    <p class="subtitle">Remplissez le formulaire pour réserver votre séjour</p>
+
+    <div id="errorMessage" class="error-message"></div>
+
+    <form id="bookingForm" action="/reservation" method="POST" novalidate>
+      
+      <!-- Personal Information -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nom">
+            Nom <span class="required">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="nom" 
+            name="nom" 
+            required
+            pattern="[A-Za-zÀ-ÿ\s-]{2,50}"
+            placeholder="Dupont"
+            autocomplete="family-name"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="prenom">
+            Prénom <span class="required">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="prenom" 
+            name="prenom" 
+            required
+            pattern="[A-Za-zÀ-ÿ\s-]{2,50}"
+            placeholder="Jean"
+            autocomplete="given-name"
+          >
+        </div>
+      </div>
+
+      <!-- Contact Information -->
+      <div class="form-group">
+        <label for="email">
+          Email <span class="required">*</span>
+        </label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          required
+          placeholder="jean.dupont@example.com"
+          autocomplete="email"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="telephone">
+          Téléphone <span class="required">*</span>
+        </label>
+        <input 
+          type="tel" 
+          id="telephone" 
+          name="telephone" 
+          required
+          pattern="(\+33|0)[1-9](\d{8})"
+          placeholder="06 12 34 56 78"
+          autocomplete="tel"
+        >
+      </div>
+
+      <!-- Booking Details -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="date">
+            Date d'arrivée <span class="required">*</span>
+          </label>
+          <input 
+            type="date" 
+            id="date" 
+            name="date" 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="nombre_de_nuits">
+            Nombre de nuits <span class="required">*</span>
+          </label>
+          <input 
+            type="number" 
+            id="nombre_de_nuits" 
+            name="nombre_de_nuits" 
+            required
+            min="1"
+            max="365"
+            placeholder="2"
+          >
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nombre_de_personnes">
+            Nombre de personnes <span class="required">*</span>
+          </label>
+          <input 
+            type="number" 
+            id="nombre_de_personnes" 
+            name="nombre_de_personnes" 
+            required
+            min="1"
+            max="20"
+            placeholder="2"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="chambre_souhaitee">
+            Type de chambre <span class="required">*</span>
+          </label>
+          <select id="chambre_souhaitee" name="chambre_souhaitee" required>
+            <option value="">Choisir...</option>
+            <option value="simple">Chambre Simple</option>
+            <option value="double">Chambre Double</option>
+            <option value="suite">Suite</option>
+            <option value="familiale">Chambre Familiale</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Message -->
+      <div class="form-group">
+        <label for="message">
+          Message (optionnel)
+        </label>
+        <textarea 
+          id="message" 
+          name="message"
+          placeholder="Demandes spéciales, allergies, etc."
+          maxlength="500"
+        ></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" id="submitBtn">
+        Confirmer la réservation
+      </button>
+
+      <div id="loading" class="loading">
+        Vérification en cours...
+      </div>
+
+      <!-- Security Badge -->
+      <div class="security-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+        </svg>
+        <span>Formulaire protégé contre les robots</span>
+      </div>
+    </form>
+  </div>
+
+  <!-- Anti-Bot Protection Script -->
+  <script>
+/**
+ * Courteline Anti-Bot Protection System
+ * Multi-layered client-side bot protection
+ */
+(function() {
+  'use strict';
+
+  const CONFIG = {
+    MIN_FORM_TIME: 3,
+    MIN_INTERACTIONS: 3,
+    MAX_NAME_LENGTH: 50,
+    MIN_NAME_LENGTH: 2,
+    PHONE_PATTERN: /^(\+33|0)[1-9](\d{8})$/,
+  };
+
+  const state = {
+    formLoadTime: Date.now(),
+    interactions: 0,
+    fieldsFocused: new Set(),
+    token: null
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  function init() {
+    const form = document.getElementById('bookingForm');
+    if (!form) return;
+
+    console.log('🛡️ Protection anti-bot activée');
+    
+    setupHoneypot(form);
+    setupJavaScriptChallenge(form);
+    setupInteractionTracking(form);
+    setupFormValidation(form);
+    disableSubmitButton(form);
+    setMinDate();
+  }
+
+  function setupHoneypot(form) {
+    const honeypot = document.createElement('input');
+    honeypot.type = 'text';
+    honeypot.name = 'website';
+    honeypot.id = 'website';
+    honeypot.setAttribute('tabindex', '-1');
+    honeypot.setAttribute('autocomplete', 'off');
+    honeypot.setAttribute('aria-hidden', 'true');
+    honeypot.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;opacity:0;';
+    form.insertBefore(honeypot, form.firstChild);
+  }
+
+  function setupJavaScriptChallenge(form) {
+    state.token = btoa(String(state.formLoadTime) + Math.random());
+    
+    const tokenField = document.createElement('input');
+    tokenField.type = 'hidden';
+    tokenField.name = 'js_token';
+    tokenField.value = state.token;
+    form.appendChild(tokenField);
+    
+    const timeField = document.createElement('input');
+    timeField.type = 'hidden';
+    timeField.name = 'form_load_time';
+    timeField.value = String(state.formLoadTime);
+    form.appendChild(timeField);
+  }
+
+  function setupInteractionTracking(form) {
+    const fields = form.querySelectorAll('input:not([type="hidden"]), textarea, select');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    fields.forEach(field => {
+      field.addEventListener('focus', function() {
+        state.fieldsFocused.add(this.name || this.id);
+        state.interactions++;
+        
+        if (state.interactions >= CONFIG.MIN_INTERACTIONS && submitBtn) {
+          submitBtn.disabled = false;
+        }
+      }, { once: true });
+      
+      field.addEventListener('input', function() {
+        state.interactions++;
+      });
+    });
+  }
+
+  function disableSubmitButton(form) {
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+    }
+  }
+
+  function setMinDate() {
+    const dateInput = document.getElementById('date');
+    if (dateInput) {
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const minDate = tomorrow.toISOString().split('T')[0];
+      dateInput.setAttribute('min', minDate);
+    }
+  }
+
+  function setupFormValidation(form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const loading = document.getElementById('loading');
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.classList.remove('show');
+      loading.classList.add('show');
+      
+      const botChecks = [
+        checkHoneypot,
+        checkTiming,
+        checkJavaScriptToken,
+        checkInteractions,
+        validateFormData
+      ];
+      
+      for (const check of botChecks) {
+        const result = check(form);
+        if (!result.passed) {
+          console.warn('🤖 Bot détecté:', result.reason);
+          loading.classList.remove('show');
+          
+          if (result.showAlert && result.message) {
+            errorMessage.textContent = result.message;
+            errorMessage.classList.add('show');
+            errorMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+          return false;
+        }
+      }
+      
+      console.log('✅ Humain vérifié, envoi du formulaire');
+      setTimeout(() => {
+        form.submit();
+      }, 500);
+    });
+  }
+
+  function checkHoneypot(form) {
+    const honeypot = form.querySelector('#website');
+    if (honeypot && honeypot.value !== '') {
+      return { passed: false, reason: 'Honeypot rempli', showAlert: false };
+    }
+    return { passed: true };
+  }
+
+  function checkTiming(form) {
+    const timeSpent = (Date.now() - state.formLoadTime) / 1000;
+    if (timeSpent < CONFIG.MIN_FORM_TIME) {
+      return { passed: false, reason: `Trop rapide (${timeSpent.toFixed(1)}s)`, showAlert: false };
+    }
+    return { passed: true };
+  }
+
+  function checkJavaScriptToken(form) {
+    const tokenField = form.querySelector('[name="js_token"]');
+    if (!tokenField || tokenField.value !== state.token) {
+      return { passed: false, reason: 'Token invalide', showAlert: false };
+    }
+    return { passed: true };
+  }
+
+  function checkInteractions(form) {
+    if (state.interactions < CONFIG.MIN_INTERACTIONS) {
+      return { passed: false, reason: `Interactions insuffisantes (${state.interactions}/${CONFIG.MIN_INTERACTIONS})`, showAlert: false };
+    }
+    return { passed: true };
+  }
+
+  function validateFormData(form) {
+    const validations = [
+      validateNom,
+      validatePrenom,
+      validateEmail,
+      validateTelephone,
+      validateDate,
+      validateNombreNuits,
+      validateNombrePersonnes,
+      validateChambre
+    ];
+    
+    for (const validate of validations) {
+      const result = validate(form);
+      if (!result.passed) return result;
+    }
+    
+    return { passed: true };
+  }
+
+  function validateNom(form) {
+    const field = form.querySelector('[name="nom"]');
+    if (!field) return { passed: true };
+    
+    const value = field.value.trim();
+    
+    if (value.length < CONFIG.MIN_NAME_LENGTH || value.length > CONFIG.MAX_NAME_LENGTH) {
+      return { passed: false, reason: 'Nom invalide', message: 'Le nom doit contenir entre 2 et 50 caractères.', showAlert: true };
+    }
+    
+    if (isGibberish(value)) {
+      return { passed: false, reason: 'Nom = gibberish', message: 'Veuillez entrer un nom valide.', showAlert: true };
+    }
+    
+    return { passed: true };
+  }
+
+  function validatePrenom(form) {
+    const field = form.querySelector('[name="prenom"]');
+    if (!field) return { passed: true };
+    
+    const value = field.value.trim();
+    
+    if (value.length < CONFIG.MIN_NAME_LENGTH || value.length > CONFIG.MAX_NAME_LENGTH) {
+      return { passed: false, reason: 'Prénom invalide', message: 'Le prénom doit contenir entre 2 et 50 caractères.', showAlert: true };
+    }
+    
+    if (isGibberish(value)) {
+      return { passed: false, reason: 'Prénom = gibberish', message: 'Veuillez entrer un prénom valide.', showAlert: true };
+    }
+    
+    return { passed: true };
+  }
+
+  function validateEmail(form) {
+    const field = form.querySelector('[name="email"]');
+    if (!field) return { passed: true };
+    
+    const value = field.value.trim();
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!emailPattern.test(value)) {
+      return { passed: false, reason: 'Email invalide', message: 'Veuillez entrer une adresse email valide.', showAlert: true };
+    }
+    
+    return { passed: true };
+  }
+
+  function validateTelephone(form) {
+    const field = form.querySelector('[name="telephone"]');
+    if (!field) return { passed: true };
+    
+    const value = field.value.replace(/\s/g, '');
+    
+    if (!CONFIG.PHONE_PATTERN.test(value)) {
+      return { passed: false, reason: 'Téléphone invalide', message: 'Veuillez entrer un numéro de téléphone français valide.', showAlert: true };
+    }
+    
+    return { passed: true };
+  }
+
+  function validateDate(form) {
+    const field = form.querySelector('[name="date"]');
+    if (!field) return { passed: true };
+    
+    const dateValue = new Date(field.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (isNaN(dateValue.getTime())) {
+      return { passed: false, reason: 'Date invalide', message: 'Veuillez entrer une date valide.', showAlert: true };
+    }
+    
+    if (dateValue < today) {
+      return { passed: false, reason: 'Date passée', message: 'La date doit être dans le futur.', showAlert: true };
+    }
+    
+    return { passed: true };
+  }
+
+  function validateNombreNuits(form) {
+    const field = form.querySelector('[name="nombre_de_nuits"]');
+    if (!field) return { passed: true };
+    
+    const value = field.value.trim();
+    
+    if (!/^\d+$/.test(value)) {
+      return { passed: false, reason: 'Nuits invalide', message: 'Le nombre de nuits doit être un nombre.', showAlert: true };
+    }
+    
+    const num = parseInt(value, 10);
+    if (num < 1 || num > 365) {
+      return { passed: false, reason: 'Nuits hors limites', message: 'Le nombre de nuits doit être entre 1 et 365.', showAlert: true };
+    }
+    
+    return { passed: true };
+  }
+
+  function validateNombrePersonnes(form) {
+    const field = form.querySelector('[name="nombre_de_personnes"]');
+    if (!field) return { passed: true };
+    
+    const value = field.value.trim();
+    
+    if (!/^\d+$/.test(value)) {
+      return { passed: false, reason: 'Personnes invalide', message: 'Le nombre de personnes doit être un nombre.', showAlert: true };
+    }
+    
+    const num = parseInt(value, 10);
+    if (num < 1 || num > 20) {
+      return { passed: false, reason: 'Personnes hors limites', message: 'Le nombre de personnes doit être entre 1 et 20.', showAlert: true };
+    }
+    
+    return { passed: true };
+  }
+
+  function validateChambre(form) {
+    const field = form.querySelector('[name="chambre_souhaitee"]');
+    if (!field) return { passed: true };
+    
+    const value = field.value.trim();
+    
+    if (!value || value === 'null' || value === '') {
+      return { passed: false, reason: 'Chambre non sélectionnée', message: 'Veuillez sélectionner un type de chambre.', showAlert: true };
+    }
+    
+    return { passed: true };
+  }
+
+  function isGibberish(text) {
+    if (!text || text.length === 0) return true;
+    
+    if (/[bcdfghjklmnpqrstvwxyz]{6,}/i.test(text)) return true;
+    if (/([A-Z][a-z]{0,2}){4,}/.test(text)) return true;
+    
+    const vowelCount = (text.match(/[aeiouyàéèêëïôûü]/gi) || []).length;
+    const vowelRatio = vowelCount / text.length;
+    if (vowelRatio < 0.2) return true;
+    
+    return false;
+  }
+
+})();
+  </script>
+</body>
+</html>

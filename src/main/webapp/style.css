@@ -1,0 +1,291 @@
+/* --- 1. RESET & VARIABLES --- */
+:root {
+    --primary: #2c3e50;      /* Dark Slate Blue */
+    --secondary: #e67e22;    /* Warm Orange */
+    --light-bg: #f8f9fa;     /* Light Gray */
+    --white: #ffffff;
+    --text: #333333;
+    --radius: 8px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text);
+    background-color: var(--white);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius);
+}
+
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* --- 2. NAVIGATION --- */
+.site-header {
+    background: var(--white);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
+
+.logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary);
+    text-transform: uppercase;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--text);
+    margin-left: 20px;
+    font-size: 0.9rem;
+}
+
+nav a:hover {
+    color: var(--secondary);
+}
+
+/* Mobile Nav Fix */
+@media (max-width: 768px) {
+    .header-flex {
+        flex-direction: column;
+        gap: 10px;
+    }
+    nav a {
+        margin: 0 10px;
+    }
+}
+
+/* --- 3. SECTIONS & TYPOGRAPHY --- */
+section {
+    padding: 60px 0;
+    border-bottom: 1px solid #eee;
+}
+
+h1, h2, h3, h4 {
+    color: var(--primary);
+    margin-bottom: 15px;
+}
+
+h1 { font-size: 2rem; text-align: center; }
+h2 { font-size: 1.8rem; text-align: center; margin-bottom: 40px; }
+
+.btn-primary, .btn-secondary, .btn-nav {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary, .btn-nav {
+    background-color: var(--secondary);
+    color: var(--white);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+/* --- 4. ROOM CARDS --- */
+.room-card {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 60px;
+    align-items: center;
+}
+
+.room-image {
+    flex: 1;
+}
+
+.room-details {
+    flex: 1;
+}
+
+/* Pricing Table Styling */
+.pricing {
+    background: var(--light-bg);
+    padding: 15px;
+    border-radius: var(--radius);
+    margin: 20px 0;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.price-row:last-child {
+    border-bottom: none;
+}
+
+/* --- 5. INFO GRID --- */
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.info-box {
+    background: var(--light-bg);
+    padding: 20px;
+    border-radius: var(--radius);
+}
+
+.info-box ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.info-box li {
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.info-box li::before {
+    content: "•";
+    color: var(--secondary);
+    position: absolute;
+    left: 0;
+}
+
+/* --- 6. CONTACT, MAP & FORM --- */
+.contact-layout {
+    display: flex;
+    gap: 50px;
+    flex-wrap: wrap;
+}
+
+.contact-info, .booking-form {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* Map Styling */
+.map-container {
+    margin-top: 20px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.booking-form {
+    background: var(--light-bg);
+    padding: 30px;
+    border-radius: var(--radius);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Gestion des colonnes du formulaire */
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+/* .col s'adapte automatiquement : 2 items = 50%, 3 items = 33% */
+.col {
+    flex: 1;
+}
+
+/* Sur mobile, on passe tout en vertical pour que ce soit lisible */
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit; /* Fixes font in textarea */
+}
+
+.form-group textarea {
+    resize: vertical; /* Allow vertical resizing only */
+}
+
+/* --- 7. MOBILE RESPONSIVENESS --- */
+@media (max-width: 768px) {
+    /* Stack room cards vertically on mobile */
+    .room-card {
+        flex-direction: column;
+    }
+    
+    /* Make images full width */
+    .room-image, .room-details {
+        width: 100%;
+    }
+    
+    .contact-layout {
+        flex-direction: column;
+    }
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* --- Espace autour de la photo d'accueil --- */
+.hero-image {
+    display: block;          /* Indispensable pour que les marges fonctionnent */
+    margin-top: 40px;        /* Espace au-dessus */
+    margin-bottom: 40px;     /* Espace en-dessous (le plus important pour le texte) */
+    margin-left: auto;       /* Centre l'image à gauche */
+    margin-right: auto;      /* Centre l'image à droite */
+    max-width: 100%;         /* Empêche l'image de dépasser sur mobile */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Petite ombre pour l'esthétique (optionnel) */
+}
+
