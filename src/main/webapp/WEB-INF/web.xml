@@ -9,4 +9,12 @@
         <url-pattern>/SendMailServlet2</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>mail2</servlet-name>
+        <servlet-class>com.google.appengine.demos.courteline.SendMailServletNew</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>mail</servlet-name>
+        <url-pattern>/SendMailServletNew</url-pattern>
+    </servlet-mapping>
 </web-app>
