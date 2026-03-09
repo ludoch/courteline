@@ -16,11 +16,19 @@
 
 import java.io.IOException;
 import java.util.Properties;
-import java.util.regex.Pattern;
-import javax.mail.*;
-import javax.mail.internet.*;
-import javax.servlet.http.*;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(name = "mail", urlPatterns = {"/SendMailServletNew"})
 public class SendMailServletNew extends HttpServlet {
 
     @Override
@@ -32,24 +40,42 @@ public class SendMailServletNew extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("text/html;charset=UTF-8");
-//
-//        // 1. Validate reCAPTCHA
-//        String gRecaptchaResponse = req.getParameter("g-recaptcha-response");
-//        if (gRecaptchaResponse == null || gRecaptchaResponse.isEmpty()) {
-//             System.out.println("RE CAPTCHA IS NULL...");
-//           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Veuillez valider le reCAPTCHA.");
-//            return;
-//        }
-//        
-//        // Verify with Google and get the full JSON response
-//        boolean ok = VerifyRecaptchaNew.verify(gRecaptchaResponse);
-//        
-//        if (!ok) {
-//            System.err.println("Google reCAPTCHA Error: " );
-//             System.out.println("RE CAPTCHA INVALID.so we stop.");
-//           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "reCAPTCHA invalide.");
-//            return;
-//        }
+
+        // 0. Honeypot Check
+        String honeypot = req.getParameter("user_verification_code");
+        if (honeypot != null && !honeypot.isEmpty()) {
+            System.out.println("Honeypot triggered! Bot detected.");
+            return; // Silently drop the request
+        }
+
+        // 1. Validate reCAPTCHA Enterprise Token
+        String token = req.getParameter("g-recaptcha-response");
+        if (token == null || token.isEmpty()) {
+            System.err.println("reCAPTCHA Verification Error: no g-recaptcha-response");
+
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing reCAPTCHA token.");
+            return;
+        }
+
+        try {
+            String projectID = "courteline-nantes";
+            String recaptchaKey = "6LcYtoMsAAAAAL7dECqKcZLR4RUk4dpqDkxlgZRY";
+
+            // The action name must match what you configured in the frontend (usually empty or 'submit')
+            float score = CreateAssessment.calculateAssessment(projectID, recaptchaKey, token, "submit");
+            System.out.println("Trust score: " + score);
+
+            // Scores range from 0.1 (bot) to 0.9 (human). 0.5 is a standard threshold.
+            if (score < 0.5) {
+                System.out.println("Low trust score: " + score);
+                resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Spam detected.");
+                return;
+            }
+        } catch (IOException e) {
+            System.err.println("reCAPTCHA Verification Error: " + e.getMessage());
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Spam detected.");
+            return;
+        }
 
         // 2. Extract and sanitize parameters
         String prenom = getString(req.getParameter("prenom"));
@@ -66,7 +92,16 @@ public class SendMailServletNew extends HttpServlet {
         if (prenom.toLowerCase().startsWith("henrytug")) {
             return;
         }
-
+        if (room == null || room.isEmpty()) {
+            // This handles cases where the 'required' attribute might be bypassed
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Erreur");
+            return;
+        }
+        if (email == null || email.isEmpty()) {
+            // This handles cases where the 'required' attribute might be bypassed
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Erreur");
+            return;
+        }
         // 3. Construct Email Body
         StringBuilder sb = new StringBuilder();
         sb.append("Demande de réservation - Courteline\n\n");

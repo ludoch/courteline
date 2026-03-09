@@ -161,11 +161,35 @@ Un petit réfrigérateur est mis à disposition .                    </p>
                     </div>
                 </div>
 
-<script>
-  function onSubmit(token) {
-        // This ensures the token is submitted with the form
-    document.getElementById("booking-form").submit();
+  <script src="https://www.google.com/recaptcha/enterprise.js?render=6LcYtoMsAAAAAL7dECqKcZLR4RUk4dpqDkxlgZRY"></script>
+
+  <script>
+  function onClick(e) {
+    e.preventDefault();
+    grecaptcha.enterprise.ready(async () => {
+      const token = await grecaptcha.enterprise.execute('6LcYtoMsAAAAAL7dECqKcZLR4RUk4dpqDkxlgZRY', {action: 'LOGIN'});
+    });
   }
+
+
+  function onSubmit(token) {
+    const form = document.getElementById("booking-form");
+    
+    // This checks all 'required' attributes (email, date, room, etc.)
+    if (form.checkValidity()) {
+        form.submit();
+    } else {
+        // This forces the browser to show the red "Please fill out this field" tooltips
+        form.reportValidity();
+        
+        // Optional: Reset reCAPTCHA so they can click again after fixing errors
+        if (typeof grecaptcha !== 'undefined') {
+            grecaptcha.enterprise.reset();
+        }
+    }
+}
+  
+  
 </script>   
 
     
@@ -207,6 +231,10 @@ Un petit réfrigérateur est mis à disposition .                    </p>
             <label for="personnes">Personnes</label>
             <input type="number" id="personnes" name="personnes" min="1" max="5" value="1">
         </div>
+<div style="display:none;" aria-hidden="true">
+    <label for="user_verification_code"></label>
+    <input type="text" id="user_verification_code" name="user_verification_code" tabindex="-1" autocomplete="off">
+</div>
     </div>
 
     <div class="form-group">
@@ -224,10 +252,14 @@ Un petit réfrigérateur est mis à disposition .                    </p>
     </div>
 
 
-       <button 
-        data-callback='onSubmit' 
-        >Envoyer la demande</button>
-      
+ <button 
+    class="g-recaptcha" 
+    data-sitekey="6LcYtoMsAAAAAL7dECqKcZLR4RUk4dpqDkxlgZRY" 
+    data-callback="onSubmit" 
+    data-action="submit">
+    Envoyer la demande
+</button>
+       
         
  
 </form>
