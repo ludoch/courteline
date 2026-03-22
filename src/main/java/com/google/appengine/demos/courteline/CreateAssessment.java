@@ -56,15 +56,9 @@ public class CreateAssessment {
             }
 
             // Check if the expected action was executed.
-            if (!response.getTokenProperties().getAction().equals(recaptchaAction)) {
-                System.out.println(
-                        "The action attribute in reCAPTCHA tag is: "
-                        + response.getTokenProperties().getAction());
-                System.out.println(
-                        "The action attribute in the reCAPTCHA tag "
-                        + "does not match the action ("
-                        + recaptchaAction
-                        + ") you are expecting to score");
+            String actualAction = response.getTokenProperties().getAction();
+            if (!actualAction.equals(recaptchaAction)) {
+                System.out.println("reCAPTCHA Action Mismatch: Expected '" + recaptchaAction + "' but got '" + actualAction + "'");
                 return;
             }
 
@@ -120,9 +114,9 @@ public class CreateAssessment {
             }
 
             // Check if the expected action was executed
-            if (!response.getTokenProperties().getAction().equals(recaptchaAction)) {
-                System.out.println("The action attribute in the reCAPTCHA tag does not match: "
-                        + response.getTokenProperties().getAction());
+            String actualAction = response.getTokenProperties().getAction();
+            if (!actualAction.equals(recaptchaAction)) {
+                System.out.println("reCAPTCHA Action Mismatch: Expected '" + recaptchaAction + "' but got '" + actualAction + "'");
                 return 0.0f;
             }
 

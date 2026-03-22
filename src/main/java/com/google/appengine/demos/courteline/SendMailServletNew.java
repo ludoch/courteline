@@ -62,7 +62,8 @@ public class SendMailServletNew extends HttpServlet {
             String recaptchaKey = "6LcYtoMsAAAAAL7dECqKcZLR4RUk4dpqDkxlgZRY";
 
             // The action name must match what you configured in the frontend (usually empty or 'submit')
-            float score = CreateAssessment.calculateAssessment(projectID, recaptchaKey, token, "submit");
+            // Using empty string as the frontend seems to send empty action even with data-action="submit"
+            float score = CreateAssessment.calculateAssessment(projectID, recaptchaKey, token, "");
             System.out.println("Trust score: " + score);
 
             // Scores range from 0.1 (bot) to 0.9 (human). 0.5 is a standard threshold.
