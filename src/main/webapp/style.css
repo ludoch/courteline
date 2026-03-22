@@ -293,3 +293,73 @@ footer {
     display: none !important;
     visibility: hidden;
 }
+
+/* 1. Hide the original text which reCAPTCHA keeps resetting */
+.g-recaptcha {
+    color: transparent !important;
+    position: relative;
+    min-width: 180px;
+    background-color: var(--secondary) !important;
+    color: var(--white) !important;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    display: inline-block;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.g-recaptcha:hover {
+    background-color: #d35400 !important; /* Slightly darker orange */
+}
+
+.g-recaptcha:active {
+    transform: scale(0.98);
+}
+
+.g-recaptcha:disabled {
+    background-color: #bdc3c7 !important; /* Grey for disabled state */
+    cursor: not-allowed;
+}
+
+/* 2. Show the default label */
+.g-recaptcha::before {
+    content: attr(data-label);
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--white); /* Ensure contrast */
+    text-align: center;
+    pointer-events: none;
+}
+
+/* 3. When loading, switch the text and add the spinner */
+.btn-loading::before {
+    content: attr(data-loading) !important;
+    text-align: left;
+    padding-left: 20px;
+}
+
+.btn-loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    right: 20px;
+    margin-top: -8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

@@ -71,7 +71,7 @@
                 <version>2.8.6</version>
                 <configuration>
                     <projectId>courteline-nantes</projectId>
-                    <version>java25auth</version>
+                    <version>java25capcha</version>
                     <promote>false</promote>
                 </configuration>
             </plugin>
